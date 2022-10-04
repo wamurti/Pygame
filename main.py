@@ -60,19 +60,39 @@ class Boulder(pg.sprite.Sprite):
         if self.rect.top > 1000:
             self.kill()
 
+
+
+# A stationary enemy, that kills on contact. For holes and water etc.
+# OMG! Invisible, try the water!
+class Hole(pg.sprite.Sprite):
+    def __init__(self, width, height, posx, posy):
+        super(Hole, self).__init__()
+        
+        self.image = pg.Surface((width,height))
+        self.image = self.image.convert_alpha()
+        self.image.fill((0,0,0,0))
+        self.rect = self.image.get_rect(center=(posx, posy))
+
 boulders = pg.sprite.Group()
 ADDBOULDER = pg.USEREVENT +1
 pg.time.set_timer(ADDBOULDER, 3000)
 
-
+start_x = SCREEN_WIDTH//2
+start_y = SCREEN_HEIGHT-50
+holes = pg.sprite.Group()
+boulders = pg.sprite.Group()
 all_sprites_list = pg.sprite.Group()
 playerCar = Sprite((255,0,0), 20, 30)
-playerCar.rect.x = 200
-playerCar.rect.y = 300
+hole1 = Hole(350, 50, 420, 360)
+hole2 = Hole(50, 200, 270, 200 )
+hole3 = Hole(50, 200, 560, 200)
+holes.add(hole1, hole2, hole3)
+playerCar.rect.x = start_x
+playerCar.rect.y = start_y
 
 
 all_sprites_list.add(playerCar)
-
+all_sprites_list.add(hole1, hole2, hole3)
 #Load Images
 map_surface = load_image('preview.png')
 map_surface = pg.transform.scale(map_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -105,13 +125,24 @@ while True:                                     #Infinite loop
         if keys[pg.K_UP]:
             playerCar.moveBack(10)
 
+        if pg.sprite.spritecollideany(playerCar, boulders):
+            # If so, then remove the player and quit the game
+            playerCar.kill()
+            pg.quit()
+            exit()
+        if pg.sprite.spritecollideany(playerCar, holes):
+            # If so, then remove the player and quit the game
+            playerCar.kill()
+            pg.quit()
+            exit()
 
 
 
 
     else:                                       #What to do when game is not active, aka gameover?
         print("Game is not active. Gameover?")
-
+    
+    holes.update()
     screen.blit(map_surface, (0,0))
     all_sprites_list.update()
     all_sprites_list.draw(screen)
