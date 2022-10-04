@@ -2,7 +2,7 @@ import pygame as pg
 pg.init() 
 game_active = True
 
-screen = pg.display.set_mode((1000,1000))       #Screen size, should this be changed? 
+screen = pg.display.set_mode((1000,800))       #Screen size, should this be changed? 
 pg.display.set_caption("Pygameforever")         #Game title
 clock = pg.time.Clock()                         #How fast we want to run our game (fps/hz/pps)
 
