@@ -23,29 +23,29 @@ def load_image(file):
     return surface.convert()
 
 # Object class Player
+
+
 class Player(pg.sprite.Sprite):
-	def __init__(self, color, height, width):
-		super().__init__()
+    def __init__(self):
+        super().__init__()
+        self.image = load_image('player.png').convert_alpha()
+        self.rect = self.image.get_rect()
+        self.start_x = SCREEN_WIDTH//2
+        self.start_y = SCREEN_HEIGHT-110
+        self.rect.x = self.start_x
+        self.rect.y = self.start_y
 
-		self.image = pg.Surface([width, height])
-		self.image.fill((255,0,0))
-		self.image.set_colorkey((0,255,0))
+    def moveRight(self, pixels):
+        self.rect.x += pixels
 
-		pg.draw.rect(self.image,color,pg.Rect(0, 0, width, height))
+    def moveLeft(self, pixels):
+        self.rect.x -= pixels
 
-		self.rect = self.image.get_rect()
+    def moveForward(self, speed):
+        self.rect.y += speed * speed/10
 
-	def moveRight(self, pixels):
-		self.rect.x += pixels
-
-	def moveLeft(self, pixels):
-		self.rect.x -= pixels
-
-	def moveForward(self, speed):
-		self.rect.y += speed * speed/10
-
-	def moveBack(self, speed):
-		self.rect.y -= speed * speed/10
+    def moveBack(self, speed):
+        self.rect.y -= speed * speed/10
 
 class Boulder(pg.sprite.Sprite):
     def __init__(self):
@@ -77,18 +77,16 @@ boulders = pg.sprite.Group()
 ADDBOULDER = pg.USEREVENT +1
 pg.time.set_timer(ADDBOULDER, 3000)
 
-start_x = SCREEN_WIDTH//2
-start_y = SCREEN_HEIGHT-50
+
 holes = pg.sprite.Group()
 boulders = pg.sprite.Group()
 all_sprites_list = pg.sprite.Group()
-playerCar = Player((255,0,0), 20, 30)
+playerCar = Player()
 hole1 = Hole(350, 50, 420, 360)
 hole2 = Hole(50, 200, 270, 200 )
 hole3 = Hole(50, 200, 560, 200)
 holes.add(hole1, hole2, hole3)
-playerCar.rect.x = start_x
-playerCar.rect.y = start_y
+
 
 
 all_sprites_list.add(playerCar)
@@ -96,7 +94,6 @@ all_sprites_list.add(hole1, hole2, hole3)
 #Load Images
 map_surface = load_image('preview.png')
 map_surface = pg.transform.scale(map_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
-
 
 
 
