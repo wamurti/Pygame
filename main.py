@@ -10,6 +10,15 @@ clock = pg.time.Clock()                         #How fast we want to run our gam
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
+def load_image(file):
+    "loads an image, prepares it for play"
+    file = os.path.join(main_dir, 'Graphics', file)
+    try:
+        surface = pg.image.load(file)
+    except pg.error:
+        raise SystemExit('Could not load image "%s" %s'%(file, pg.get_error()))
+    return surface.convert()
+
 # Object class Player
 class Sprite(pg.sprite.Sprite):
 	def __init__(self, color, height, width):
@@ -44,7 +53,7 @@ playerCar.rect.y = 300
 all_sprites_list.add(playerCar)
 
 #Load Images
-map_surface = pg.image.load(main_dir+'/Assets/Graphics/preview.png')
+map_surface = load_image('preview.png')
 map_surface = pg.transform.scale(map_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 
