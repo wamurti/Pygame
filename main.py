@@ -10,6 +10,39 @@ clock = pg.time.Clock()                         #How fast we want to run our gam
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
+# Object class Player
+class Sprite(pg.sprite.Sprite):
+	def __init__(self, color, height, width):
+		super().__init__()
+
+		self.image = pg.Surface([width, height])
+		self.image.fill((255,0,0))
+		self.image.set_colorkey((0,255,0))
+
+		pg.draw.rect(self.image,color,pg.Rect(0, 0, width, height))
+
+		self.rect = self.image.get_rect()
+
+	def moveRight(self, pixels):
+		self.rect.x += pixels
+
+	def moveLeft(self, pixels):
+		self.rect.x -= pixels
+
+	def moveForward(self, speed):
+		self.rect.y += speed * speed/10
+
+	def moveBack(self, speed):
+		self.rect.y -= speed * speed/10
+
+all_sprites_list = pg.sprite.Group()
+playerCar = Sprite((255,0,0), 20, 30)
+playerCar.rect.x = 200
+playerCar.rect.y = 300
+
+
+all_sprites_list.add(playerCar)
+
 #Load Images
 map_surface = pg.image.load(main_dir+'/Assets/Graphics/preview.png')
 map_surface = pg.transform.scale(map_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -24,10 +57,24 @@ while True:                                     #Infinite loop
             exit()
     
     if game_active:                             #What to do when game is active
-        print("Game is active")
+
+        keys = pg.key.get_pressed()
+        if keys[pg.K_LEFT]:
+            playerCar.moveLeft(10)
+        if keys[pg.K_RIGHT]:
+            playerCar.moveRight(10)
+        if keys[pg.K_DOWN]:
+            playerCar.moveForward(10)
+        if keys[pg.K_UP]:
+            playerCar.moveBack(10)
+
+
+
     else:                                       #What to do when game is not active, aka gameover?
         print("Game is not active. Gameover?")
 
     screen.blit(map_surface, (0,0))
+    all_sprites_list.update()
+    all_sprites_list.draw(screen)
     pg.display.update()                         
     clock.tick(60)                              #Updates disp 60 times per sec
