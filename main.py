@@ -23,7 +23,7 @@ def load_image(file):
     return surface.convert()
 
 # Object class Player
-class Sprite(pg.sprite.Sprite):
+class Player(pg.sprite.Sprite):
 	def __init__(self, color, height, width):
 		super().__init__()
 
@@ -82,7 +82,7 @@ start_y = SCREEN_HEIGHT-50
 holes = pg.sprite.Group()
 boulders = pg.sprite.Group()
 all_sprites_list = pg.sprite.Group()
-playerCar = Sprite((255,0,0), 20, 30)
+playerCar = Player((255,0,0), 20, 30)
 hole1 = Hole(350, 50, 420, 360)
 hole2 = Hole(50, 200, 270, 200 )
 hole3 = Hole(50, 200, 560, 200)
