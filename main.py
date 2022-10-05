@@ -1,10 +1,13 @@
 import pygame as pg
 import os.path
 import random
-pg.init() 
+pg.init()
+from pygame import mixer
 game_active = True
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
+anim = 3
+ALPHA =(0, 0, 0)
 screen = pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))       #Screen size, should this be changed? 
 pg.display.set_caption("Pygameforever")         #Game title
 clock = pg.time.Clock()                         #How fast we want to run our game (fps/hz/pps)
@@ -22,37 +25,72 @@ def load_image(file):
         raise SystemExit('Could not load image "%s" %s'%(file, pg.get_error()))
     return surface.convert()
 
+#Background Sound
+ 
+
+mixer.init()
+mixer.music.load(f"{main_dir}/Graphics/WoodlandFantasy.wav")
+mixer.music.set_volume(0.2)
+mixer.music.play(-1)
+
+
 # Object class Player
-class Sprite(pg.sprite.Sprite):
-	def __init__(self, color, height, width):
-		super().__init__()
 
-		self.image = pg.Surface([width, height])
-		self.image.fill((255,0,0))
-		self.image.set_colorkey((0,255,0))
 
-		pg.draw.rect(self.image,color,pg.Rect(0, 0, width, height))
+class Player(pg.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.sprites = []
+        self.sprites.append(load_image('player1.png').convert_alpha())
+        self.sprites.append(load_image('player2.png').convert_alpha())
+        self.current_sprite = 0
+        self.image = self.sprites[self.current_sprite]
+        self.rect = self.image.get_rect()
+        self.start_x = SCREEN_WIDTH//2
+        self.start_y = SCREEN_HEIGHT-110
+        self.rect.x = self.start_x
+        self.rect.y = self.start_y
+        self.frame = 0
+        self.animation = False
 
-		self.rect = self.image.get_rect()
+    def animate(self, trueorfalse):
+        self.animation = trueorfalse
+    def update(self):
+        if self.animation == True:
+            self.current_sprite += 0.1
 
-	def moveRight(self, pixels):
-		self.rect.x += pixels
+            if self.current_sprite >= len(self.sprites):
+                self.current_sprite = 0
+            self.image = self.sprites[int(self.current_sprite)]
 
-	def moveLeft(self, pixels):
-		self.rect.x -= pixels
+    def moveRight(self, pixels):
+        self.rect.x += pixels
 
-	def moveForward(self, speed):
-		self.rect.y += speed * speed/10
+    def moveLeft(self, pixels):
+        self.rect.x -= pixels
 
-	def moveBack(self, speed):
-		self.rect.y -= speed * speed/10
+    def moveForward(self, speed):
+        self.rect.y += speed * speed/10
+
+    def moveBack(self, speed):
+
+        self.rect.y -= speed * speed/10
+        # Move forward for animation ? /JL
+        if self.rect.y < 0:
+            self.frame +=1
+            if self.frame > 2 * anim:
+                self.frame = 0
+        # Move back for animation ? /JL
+        if self.rect.y > 0:
+            self.frame += 1
+            if self.frame > 2 * anim:
+                self.frame = 0
 
 class Boulder(pg.sprite.Sprite):
     def __init__(self):
         super(Boulder, self).__init__()
         x = random.randint(100, 900)
-        self.image = pg.Surface((200,200))
-        self.image.fill((0, 200, 0))
+        self.image = load_image('Blood_Magic_Effect_01.png').convert_alpha()
         self.rect = self.image.get_rect(midbottom=(x, 0))
 
     def update(self):
@@ -60,25 +98,47 @@ class Boulder(pg.sprite.Sprite):
         if self.rect.top > 1000:
             self.kill()
 
+
+
+# A stationary enemy, that kills on contact. For holes and water etc.
+
+class Hole(pg.sprite.Sprite):
+    def __init__(self, width, height, posx, posy):
+        super(Hole, self).__init__()
+        
+        self.image = pg.Surface((width,height))
+        self.image = self.image.convert_alpha()
+        self.image.fill((0,0,0,0))
+        self.rect = self.image.get_rect(center=(posx, posy))
+
 boulders = pg.sprite.Group()
 ADDBOULDER = pg.USEREVENT +1
 pg.time.set_timer(ADDBOULDER, 3000)
 
 
+holes = pg.sprite.Group()
+boulders = pg.sprite.Group()
 all_sprites_list = pg.sprite.Group()
-playerCar = Sprite((255,0,0), 20, 30)
-playerCar.rect.x = 200
-playerCar.rect.y = 300
+playerCar = Player()
+hole1 = Hole(350, 50, 420, 360)
+hole2 = Hole(50, 200, 270, 200 )
+hole3 = Hole(50, 200, 560, 200)
+holes.add(hole1, hole2, hole3)
+
+# Variables and list for shrink
+liten = pg.transform.scale(playerCar.image, (75, 75))
+mindre = pg.transform.scale(playerCar.image, (50, 50))
+minst = pg.transform.scale(playerCar.image, (25, 25))
+shrink = [liten, mindre, minst]
 
 
 all_sprites_list.add(playerCar)
-
+all_sprites_list.add(hole1, hole2, hole3)
 #Load Images
 map_surface = load_image('preview.png')
 map_surface = pg.transform.scale(map_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-
-
+maps_cleared = 0
 
 while True:                                     #Infinite loop
     for events in pg.event.get():               #Our event-loop
@@ -90,6 +150,16 @@ while True:                                     #Infinite loop
             boulders.add(new_boulder)
             all_sprites_list.add(new_boulder)
 
+        if events.type == pg.KEYUP:
+            if events.key == pg.K_LEFT:
+                playerCar.animate(False)
+            if events.key == pg.K_RIGHT:
+                playerCar.animate(False)
+            if events.key == pg.K_UP:
+                playerCar.animate(False)
+            if events.key == pg.K_DOWN:
+                playerCar.animate(False)
+
 
     if game_active:                             #What to do when game is active
         boulders.update()
@@ -97,21 +167,51 @@ while True:                                     #Infinite loop
             screen.blit(entity.image, entity.rect)
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
+            playerCar.animate(True)
             playerCar.moveLeft(10)
         if keys[pg.K_RIGHT]:
+            playerCar.animate(True)
             playerCar.moveRight(10)
         if keys[pg.K_DOWN]:
+            playerCar.animate(True)
             playerCar.moveForward(10)
+                                    # PLayer update /JL
         if keys[pg.K_UP]:
+            playerCar.animate(True)
             playerCar.moveBack(10)
 
+        if pg.sprite.spritecollideany(playerCar, boulders):
+            # If so, then remove the player and quit the game
+            playerCar.kill()
+            pg.quit()
+            exit()
+        if pg.sprite.spritecollideany(playerCar, holes):
+            # If so, then remove the player and quit the game
+            for i in shrink:
+                screen.blit(map_surface, (0,0))
+                screen.blit(i, (playerCar.rect))  
+                pg.display.update()
+                pg.time.wait(300)
+
+            playerCar.kill()
+            pg.quit()
+            exit()
+        if playerCar.rect.bottom < 0:
+            # If player clears the course
+            print("Du har nu klarat bana1")
+            maps_cleared += 1
+            game_active = False
 
 
 
 
     else:                                       #What to do when game is not active, aka gameover?
-        print("Game is not active. Gameover?")
-
+        if maps_cleared == 1:
+            print("Starting next map")
+        else:
+            print("Gameover?")
+    
+    holes.update()
     screen.blit(map_surface, (0,0))
     all_sprites_list.update()
     all_sprites_list.draw(screen)
