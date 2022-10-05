@@ -1,7 +1,8 @@
 import pygame as pg
 import os.path
 import random
-pg.init() 
+pg.init()
+from pygame import mixer
 game_active = True
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
@@ -23,6 +24,15 @@ def load_image(file):
     except pg.error:
         raise SystemExit('Could not load image "%s" %s'%(file, pg.get_error()))
     return surface.convert()
+
+#Background Sound
+ 
+
+mixer.init()
+mixer.music.load(f"{main_dir}/Graphics/WoodlandFantasy.wav")
+mixer.music.set_volume(0.2)
+mixer.music.play(-1)
+
 
 # Object class Player
 
