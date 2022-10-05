@@ -28,10 +28,10 @@ def load_image(file):
 #Background Sound
  
 
-#mixer.init()
-#mixer.music.load(f"{main_dir}/Graphics/WoodlandFantasy.wav")
-#mixer.music.set_volume(0.2)
-#mixer.music.play(-1)
+mixer.init()
+mixer.music.load(f"{main_dir}/Graphics/WoodlandFantasy.wav")
+mixer.music.set_volume(0.2)
+mixer.music.play(-1)
 
 
 # Object class Player
