@@ -63,7 +63,7 @@ class Boulder(pg.sprite.Sprite):
 
 
 # A stationary enemy, that kills on contact. For holes and water etc.
-# OMG! Invisible, try the water!
+
 class Hole(pg.sprite.Sprite):
     def __init__(self, width, height, posx, posy):
         super(Hole, self).__init__()
@@ -87,6 +87,11 @@ hole2 = Hole(50, 200, 270, 200 )
 hole3 = Hole(50, 200, 560, 200)
 holes.add(hole1, hole2, hole3)
 
+# Variables and list for shrink
+liten = pg.transform.scale(playerCar.image, (75, 75))
+mindre = pg.transform.scale(playerCar.image, (50, 50))
+minst = pg.transform.scale(playerCar.image, (25, 25))
+shrink = [liten, mindre, minst]
 
 
 all_sprites_list.add(playerCar)
@@ -129,6 +134,12 @@ while True:                                     #Infinite loop
             exit()
         if pg.sprite.spritecollideany(playerCar, holes):
             # If so, then remove the player and quit the game
+            for i in shrink:
+                screen.blit(map_surface, (0,0))
+                screen.blit(i, (playerCar.rect))  
+                pg.display.update()
+                pg.time.wait(300)
+
             playerCar.kill()
             pg.quit()
             exit()
