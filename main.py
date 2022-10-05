@@ -95,7 +95,7 @@ all_sprites_list.add(hole1, hole2, hole3)
 map_surface = load_image('preview.png')
 map_surface = pg.transform.scale(map_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-
+maps_cleared = 0
 
 while True:                                     #Infinite loop
     for events in pg.event.get():               #Our event-loop
@@ -132,12 +132,20 @@ while True:                                     #Infinite loop
             playerCar.kill()
             pg.quit()
             exit()
+        if playerCar.rect.bottom < 0:
+            # If player clears the course
+            print("Du har nu klarat bana1")
+            maps_cleared += 1
+            game_active = False
 
 
 
 
     else:                                       #What to do when game is not active, aka gameover?
-        print("Game is not active. Gameover?")
+        if maps_cleared == 1:
+            print("Starting next map")
+        else:
+            print("Gameover?")
     
     holes.update()
     screen.blit(map_surface, (0,0))
