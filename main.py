@@ -28,10 +28,10 @@ def load_image(file):
 #Background Sound
  
 
-mixer.init()
-mixer.music.load(f"{main_dir}/Graphics/WoodlandFantasy.wav")
-mixer.music.set_volume(0.2)
-mixer.music.play(-1)
+#mixer.init()
+#mixer.music.load(f"{main_dir}/Graphics/WoodlandFantasy.wav")
+#mixer.music.set_volume(0.2)
+#mixer.music.play(-1)
 
 
 # Object class Player
@@ -84,7 +84,7 @@ class Boulder(pg.sprite.Sprite):
     def __init__(self):
         super(Boulder, self).__init__()
         x = random.randint(100, 900)
-        self.image = load_image('Blood_Magic_Effect_01.png').convert_alpha()
+        self.image = load_image('gif.gif3.gif').convert_alpha()
         self.rect = self.image.get_rect(midbottom=(x, 0))
 
     def update(self):
