@@ -5,6 +5,8 @@ pg.init()
 game_active = True
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
+anim = 3
+ALPHA =(0, 0, 0)
 screen = pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))       #Screen size, should this be changed? 
 pg.display.set_caption("Pygameforever")         #Game title
 clock = pg.time.Clock()                         #How fast we want to run our game (fps/hz/pps)
@@ -28,12 +30,22 @@ def load_image(file):
 class Player(pg.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = load_image('player.png').convert_alpha()
+        self.image = load_image('player.png').convert_alpha() # Remove? /JL
         self.rect = self.image.get_rect()
         self.start_x = SCREEN_WIDTH//2
         self.start_y = SCREEN_HEIGHT-110
         self.rect.x = self.start_x
         self.rect.y = self.start_y
+        self.frame = 0
+        self.images = []
+        # Alpha for image and should animate player but don't /JL
+        for x in range(1,2):
+            image = load_image('player' + str(x) + '.png').convert()
+            image.convert_alpha()
+            image.set_colorkey(ALPHA)
+            self.images.append(image)
+            self.image = self.images[0]
+            #self.rect = self.image.get_rect() #Remove? /JL
 
     def moveRight(self, pixels):
         self.rect.x += pixels
@@ -45,7 +57,18 @@ class Player(pg.sprite.Sprite):
         self.rect.y += speed * speed/10
 
     def moveBack(self, speed):
+
         self.rect.y -= speed * speed/10
+        # Move forward for animation ? /JL
+        if self.rect.y < 0:
+            self.frame +=1
+            if self.frame > 2 * anim:
+                self.frame = 0
+        # Move back for animation ? /JL
+        if self.rect.y > 0:
+            self.frame += 1
+            if self.frame > 2 * anim:
+                self.frame = 0
 
 class Boulder(pg.sprite.Sprite):
     def __init__(self):
@@ -159,6 +182,7 @@ while True:                                     #Infinite loop
             print("Gameover?")
     
     holes.update()
+    playerCar.update()                          # PLayer update /JL
     screen.blit(map_surface, (0,0))
     all_sprites_list.update()
     all_sprites_list.draw(screen)
