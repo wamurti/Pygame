@@ -26,7 +26,6 @@ def load_image(file):
     return surface
 
 #Background Sound
- 
 
 mixer.init()
 mixer.music.load(f"{main_dir}/Graphics/WoodlandFantasy.wav")
