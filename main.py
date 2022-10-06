@@ -163,19 +163,25 @@ while True:                                     #Infinite loop
         boulders.update()
         for entity in all_sprites_list:
             screen.blit(entity.image, entity.rect)
+
         keys = pg.key.get_pressed()
+        playerCar.animate(False)
         if keys[pg.K_LEFT]:
             playerCar.animate(True)
             playerCar.moveLeft(speed)
+            
         if keys[pg.K_RIGHT]:
             playerCar.animate(True)
             playerCar.moveRight(speed)
+            
         if keys[pg.K_DOWN]:
             playerCar.animate(True)
             playerCar.moveBack(speed)
+            
         if keys[pg.K_UP]:
             playerCar.animate(True)
             playerCar.moveForward(speed)
+        
 
         if pg.sprite.spritecollideany(playerCar, boulders):
             # If so, then remove the player and quit the game
