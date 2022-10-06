@@ -58,17 +58,26 @@ class Player(pg.sprite.Sprite):
             #self.rect = self.image.get_rect() #Remove? /JL
 
     def moveRight(self, pixels):
-        self.rect.x += pixels
+        if self.rect.right > SCREEN_WIDTH+20:
+            pixels = 0
+        else:
+            self.rect.x += pixels
+
 
     def moveLeft(self, pixels):
-        self.rect.x -= pixels
+        if self.rect.left < 0:
+            pixels = 0
+        else:    
+            self.rect.x -= pixels
 
-    def moveForward(self, speed):
-        self.rect.y += speed * speed/10
+    def moveForward(self, pixels):    
+        self.rect.y -= pixels
 
-    def moveBack(self, speed):
-
-        self.rect.y -= speed * speed/10
+    def moveBack(self, pixels):
+        if self.rect.bottom > SCREEN_HEIGHT+20:
+            pixels = 0
+        else:
+            self.rect.y += pixels
         # Move forward for animation ? /JL
         if self.rect.y < 0:
             self.frame +=1
@@ -79,6 +88,9 @@ class Player(pg.sprite.Sprite):
             self.frame += 1
             if self.frame > 2 * anim:
                 self.frame = 0
+
+# Speed of Player Character
+speed = 8
 
 class Boulder(pg.sprite.Sprite):
     def __init__(self):
@@ -151,13 +163,13 @@ while True:                                     #Infinite loop
             screen.blit(entity.image, entity.rect)
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
-            playerCar.moveLeft(10)
+            playerCar.moveLeft(speed)
         if keys[pg.K_RIGHT]:
-            playerCar.moveRight(10)
+            playerCar.moveRight(speed)
         if keys[pg.K_DOWN]:
-            playerCar.moveForward(10)
+            playerCar.moveBack(speed)
         if keys[pg.K_UP]:
-            playerCar.moveBack(10)
+            playerCar.moveForward(speed)
 
         if pg.sprite.spritecollideany(playerCar, boulders):
             # If so, then remove the player and quit the game
