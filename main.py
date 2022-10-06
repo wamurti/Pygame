@@ -23,7 +23,7 @@ def load_image(file):
         surface = pg.image.load(file)
     except pg.error:
         raise SystemExit('Could not load image "%s" %s'%(file, pg.get_error()))
-    return surface.convert()
+    return surface
 
 #Background Sound
  
@@ -33,29 +33,34 @@ mixer.music.load(f"{main_dir}/Graphics/WoodlandFantasy.wav")
 mixer.music.set_volume(0.2)
 mixer.music.play(-1)
 
-
 # Object class Player
 
 
 class Player(pg.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = load_image('player.png').convert_alpha() # Remove? /JL
+        self.sprites = []
+        self.sprites.append(load_image('player1.png').convert_alpha())
+        self.sprites.append(load_image('player2.png').convert_alpha())
+        self.current_sprite = 0
+        self.image = self.sprites[self.current_sprite]
         self.rect = self.image.get_rect()
         self.start_x = SCREEN_WIDTH//2
         self.start_y = SCREEN_HEIGHT-110
         self.rect.x = self.start_x
         self.rect.y = self.start_y
         self.frame = 0
-        self.images = []
-        # Alpha for image and should animate player but don't /JL
-        for x in range(1,2):
-            image = load_image('player' + str(x) + '.png').convert()
-            image.convert_alpha()
-            image.set_colorkey(ALPHA)
-            self.images.append(image)
-            self.image = self.images[0]
-            #self.rect = self.image.get_rect() #Remove? /JL
+        self.animation = False
+
+    def animate(self, trueorfalse):
+        self.animation = trueorfalse
+    def update(self):
+        if self.animation == True:
+            self.current_sprite += 0.05
+
+            if self.current_sprite >= len(self.sprites):
+                self.current_sprite = 0
+            self.image = self.sprites[int(self.current_sprite)]
 
     def moveRight(self, pixels):
         if self.rect.right > SCREEN_WIDTH+20:
@@ -78,16 +83,7 @@ class Player(pg.sprite.Sprite):
             pixels = 0
         else:
             self.rect.y += pixels
-        # Move forward for animation ? /JL
-        if self.rect.y < 0:
-            self.frame +=1
-            if self.frame > 2 * anim:
-                self.frame = 0
-        # Move back for animation ? /JL
-        if self.rect.y > 0:
-            self.frame += 1
-            if self.frame > 2 * anim:
-                self.frame = 0
+        
 
 # Speed of Player Character
 speed = 5
@@ -170,12 +166,16 @@ while True:                                     #Infinite loop
             screen.blit(entity.image, entity.rect)
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
+            playerCar.animate(True)
             playerCar.moveLeft(speed)
         if keys[pg.K_RIGHT]:
+            playerCar.animate(True)
             playerCar.moveRight(speed)
         if keys[pg.K_DOWN]:
+            playerCar.animate(True)
             playerCar.moveBack(speed)
         if keys[pg.K_UP]:
+            playerCar.animate(True)
             playerCar.moveForward(speed)
 
         if pg.sprite.spritecollideany(playerCar, boulders):
