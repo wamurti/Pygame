@@ -90,7 +90,7 @@ class Player(pg.sprite.Sprite):
                 self.frame = 0
 
 # Speed of Player Character
-speed = 8
+speed = 5
 
 class Boulder(pg.sprite.Sprite):
     def __init__(self):
@@ -114,7 +114,7 @@ class Hole(pg.sprite.Sprite):
         
         self.image = pg.Surface((width,height))
         self.image = self.image.convert_alpha()
-        self.image.fill((0,0,0,0))
+        self.image.fill((0, 0, 0, 0))
         self.rect = self.image.get_rect(center=(posx, posy))
 
 boulders = pg.sprite.Group()
@@ -126,10 +126,17 @@ holes = pg.sprite.Group()
 boulders = pg.sprite.Group()
 all_sprites_list = pg.sprite.Group()
 playerCar = Player()
-hole1 = Hole(350, 50, 420, 360)
-hole2 = Hole(50, 200, 270, 200 )
-hole3 = Hole(50, 200, 560, 200)
-holes.add(hole1, hole2, hole3)
+# Water-hole
+hole1 = Hole(300, 20, 420, 360)
+hole2 = Hole(20, 200, 270, 200)
+hole3 = Hole(20, 200, 560, 200)
+hole8 = Hole(400, 20, 450, 100)
+# Dirt-hole
+hole4 = Hole(70, 20, 460, 635)
+hole5 = Hole(20, 70, 635, 550)
+hole6 = Hole(70, 20, 600, 490)
+hole7 = Hole(10, 70, 430, 600)
+holes.add(hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8)
 
 # Variables and list for shrink
 liten = pg.transform.scale(playerCar.image, (75, 75))
@@ -139,7 +146,7 @@ shrink = [liten, mindre, minst]
 
 
 all_sprites_list.add(playerCar)
-all_sprites_list.add(hole1, hole2, hole3)
+all_sprites_list.add(hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8)
 #Load Images
 map_surface = load_image('preview.png')
 map_surface = pg.transform.scale(map_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
