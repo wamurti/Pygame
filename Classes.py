@@ -31,8 +31,8 @@ class Player(pg.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.sprites = []
-        self.sprites.append(load_image('player1.png').convert_alpha())
-        self.sprites.append(load_image('player2.png').convert_alpha())
+        self.sprites.append(pg.transform.scale(load_image('player1.png').convert_alpha(),(60,60)))
+        self.sprites.append(pg.transform.scale(load_image('player2.png').convert_alpha(),(60,60)))
         self.current_sprite = 0
         self.image = self.sprites[self.current_sprite]
         self.rect = self.image.get_rect()
