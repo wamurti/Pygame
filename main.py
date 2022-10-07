@@ -97,7 +97,7 @@ heart_1_empty = pg.transform.scale2x(load_image('Heart2.png'))
 #pg.transform.scale2x(heart_1_empty)
 
 heart_system = [heart_1,heart_rect_1, heart_2, heart_rect_2, heart_3, heart_rect_3, heart_1_empty]
-heart_count = 0
+number_of_hits = 0
 
 
 maps_cleared = 0
@@ -138,15 +138,21 @@ while True:                                     #Infinite loop
         
 
         if pg.sprite.spritecollideany(playerCar, boulders):
-            # If so, then remove the player and quit the game
+            # Vad händer när spelaren blir träffad av en eldboll
 
-            heart_count += 1
-            if heart_count in range(0,15):
+            number_of_hits += 1
+            if number_of_hits in range(0,15):
                 heart_system[0] = heart_system[6]
-            if heart_count in range(15,29):
+                playerCar.moveBack(10)
+                playerCar.moveLeft(5)
+            if number_of_hits in range(15,29):
                 heart_system[2] = heart_system[6]
-            if heart_count in range(30,44):
+                playerCar.moveBack(10)
+                playerCar.moveLeft(5)
+            if number_of_hits in range(30,44):
                 heart_system[4] = heart_system[6]
+                playerCar.moveBack(10)
+                playerCar.moveLeft(5)
                 playerCar.kill()
                 pg.quit()
                 exit()
