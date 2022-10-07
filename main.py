@@ -162,11 +162,6 @@ while True:                                     #Infinite loop
 
 
 
-            # If so, then remove the player and quit the game
-            playerCar.kill()
-            pg.quit()
-            exit()
-
         if pg.sprite.spritecollideany(playerCar, holes):
             # If so, then remove the player and quit the game
             for i in shrink:
