@@ -83,14 +83,18 @@ all_sprites_list.add(hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8)
 map_surface = load_image('preview.png')
 map_surface = pg.transform.scale(map_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-heart_1 = load_image('Heart1.png')
-heart_2 = load_image('Heart1.png')
-heart_3 = load_image('Heart1.png')
-heart_rect_1 = heart_1.get_rect(center = (SCREEN_WIDTH - 20,15))
-heart_rect_2 = heart_2.get_rect(center = (SCREEN_WIDTH - 40,15))
-heart_rect_3 = heart_2.get_rect(center = (SCREEN_WIDTH - 60,15))
+heart_1 = pg.transform.scale2x(load_image('Heart1.png'))
+#pg.transform.scale2x(heart_1)
+heart_2 = pg.transform.scale2x(load_image('Heart1.png'))
+#pg.transform.scale2x(heart_2)
+heart_3 = pg.transform.scale2x(load_image('Heart1.png'))
+#pg.transform.scale2x(heart_3)
+heart_rect_1 = heart_1.get_rect(center = (SCREEN_WIDTH - 16,15))
+heart_rect_2 = heart_2.get_rect(center = (SCREEN_WIDTH - 50,15))
+heart_rect_3 = heart_2.get_rect(center = (SCREEN_WIDTH - 84,15))
 
-heart_1_empty = load_image('Heart2.png')
+heart_1_empty = pg.transform.scale2x(load_image('Heart2.png'))
+#pg.transform.scale2x(heart_1_empty)
 
 heart_system = [heart_1,heart_rect_1, heart_2, heart_rect_2, heart_3, heart_rect_3, heart_1_empty]
 heart_count = 0
