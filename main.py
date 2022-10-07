@@ -83,6 +83,7 @@ all_sprites_list.add(hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8)
 map_surface = load_image('preview.png')
 map_surface = pg.transform.scale(map_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
+
 heart_1 = pg.transform.scale2x(load_image('Heart1.png'))
 #pg.transform.scale2x(heart_1)
 heart_2 = pg.transform.scale2x(load_image('Heart1.png'))
@@ -98,6 +99,7 @@ heart_1_empty = pg.transform.scale2x(load_image('Heart2.png'))
 
 heart_system = [heart_1,heart_rect_1, heart_2, heart_rect_2, heart_3, heart_rect_3, heart_1_empty]
 number_of_hits = 0
+
 
 
 maps_cleared = 0
@@ -138,6 +140,7 @@ while True:                                     #Infinite loop
         
 
         if pg.sprite.spritecollideany(playerCar, boulders):
+
             # Vad händer när spelaren blir träffad av en eldboll
 
             number_of_hits += 1
@@ -158,6 +161,12 @@ while True:                                     #Infinite loop
                 exit()
 
 
+
+            # If so, then remove the player and quit the game
+            playerCar.kill()
+            pg.quit()
+            exit()
+
         if pg.sprite.spritecollideany(playerCar, holes):
             # If so, then remove the player and quit the game
             for i in shrink:
@@ -165,7 +174,10 @@ while True:                                     #Infinite loop
                 screen.blit(i, (playerCar.rect))  
                 pg.display.update()
                 pg.time.wait(300)
+
             
+
+
 
             playerCar.kill()
             pg.quit()
@@ -175,6 +187,7 @@ while True:                                     #Infinite loop
             print("Du har nu klarat bana1")
             maps_cleared += 1
             game_active = False
+
         
 
 
