@@ -83,6 +83,25 @@ all_sprites_list.add(hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8)
 map_surface = load_image('preview.png')
 map_surface = pg.transform.scale(map_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
+
+heart_1 = pg.transform.scale2x(load_image('Heart1.png'))
+#pg.transform.scale2x(heart_1)
+heart_2 = pg.transform.scale2x(load_image('Heart1.png'))
+#pg.transform.scale2x(heart_2)
+heart_3 = pg.transform.scale2x(load_image('Heart1.png'))
+#pg.transform.scale2x(heart_3)
+heart_rect_1 = heart_1.get_rect(center = (SCREEN_WIDTH - 16,15))
+heart_rect_2 = heart_2.get_rect(center = (SCREEN_WIDTH - 50,15))
+heart_rect_3 = heart_2.get_rect(center = (SCREEN_WIDTH - 84,15))
+
+heart_1_empty = pg.transform.scale2x(load_image('Heart2.png'))
+#pg.transform.scale2x(heart_1_empty)
+
+heart_system = [heart_1,heart_rect_1, heart_2, heart_rect_2, heart_3, heart_rect_3, heart_1_empty]
+number_of_hits = 0
+
+
+
 maps_cleared = 0
 
 while True:                                     #Infinite loop
@@ -121,10 +140,33 @@ while True:                                     #Infinite loop
         
 
         if pg.sprite.spritecollideany(playerCar, boulders):
+
+            # Vad händer när spelaren blir träffad av en eldboll
+
+            number_of_hits += 1
+            if number_of_hits in range(0,15):
+                heart_system[0] = heart_system[6]
+                playerCar.moveBack(10)
+                playerCar.moveLeft(5)
+            if number_of_hits in range(15,29):
+                heart_system[2] = heart_system[6]
+                playerCar.moveBack(10)
+                playerCar.moveLeft(5)
+            if number_of_hits in range(30,44):
+                heart_system[4] = heart_system[6]
+                playerCar.moveBack(10)
+                playerCar.moveLeft(5)
+                playerCar.kill()
+                pg.quit()
+                exit()
+
+
+
             # If so, then remove the player and quit the game
             playerCar.kill()
             pg.quit()
             exit()
+
         if pg.sprite.spritecollideany(playerCar, holes):
             # If so, then remove the player and quit the game
             for i in shrink:
@@ -132,6 +174,10 @@ while True:                                     #Infinite loop
                 screen.blit(i, (playerCar.rect))  
                 pg.display.update()
                 pg.time.wait(300)
+
+            
+
+
 
             playerCar.kill()
             pg.quit()
@@ -141,6 +187,8 @@ while True:                                     #Infinite loop
             print("Du har nu klarat bana1")
             maps_cleared += 1
             game_active = False
+
+        
 
 
     else:                                       #What to do when game is not active, aka gameover?
@@ -154,5 +202,8 @@ while True:                                     #Infinite loop
     screen.blit(map_surface, (0,0))
     all_sprites_list.update()
     all_sprites_list.draw(screen)
+    screen.blit(heart_system[0],heart_system[1])
+    screen.blit(heart_system[2],heart_system[3])
+    screen.blit(heart_system[4],heart_system[5])
     pg.display.update()                         
     clock.tick(60)                              #Updates disp 60 times per sec
