@@ -39,6 +39,10 @@ mixer.init()
 mixer.music.load(f"{main_dir}/Graphics/WoodlandFantasy.wav")
 mixer.music.set_volume(0.2)
 mixer.music.play(-1)
+boulderOut = mixer.Sound(f"{main_dir}/Graphics/foom_0.wav")
+arrow_sound = mixer.Sound(f"{main_dir}/Graphics/arrowHit04.wav")
+putoutfire = mixer.Sound(f"{main_dir}/Graphics/putoutfire.ogg")
+
         
 
 # Speed of Player Character
@@ -193,6 +197,7 @@ def game_loop():
                 pg.quit()
                 exit()
             if events.type == ADDBOULDER:
+                mixer.Sound.play(boulderOut)
                 new_boulder = Boulder()
                 boulders.add(new_boulder)
                 all_sprites_list.add(new_boulder)
@@ -203,6 +208,7 @@ def game_loop():
                         new_arrow = Arrow()
                         arrows.add(new_arrow)
                         all_sprites_list.add(new_arrow)
+                        mixer.Sound.play(arrow_sound)
         
         if gaming:                         #What to do when game is active  
 
@@ -225,7 +231,8 @@ def game_loop():
                 playerCar.moveForward(speed)
             
             if pg.sprite.groupcollide(arrows, boulders,True,True):
-                print("TRÄFF")            
+                print("TRÄFF")
+                mixer.Sound.play(putoutfire)          
 
             if pg.sprite.spritecollideany(playerCar, boulders):
                 global number_of_hits
