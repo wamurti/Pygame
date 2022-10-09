@@ -224,6 +224,8 @@ def game_loop():
                 playerCar.animate(True)
                 playerCar.moveForward(speed)
             
+            if pg.sprite.groupcollide(arrows, boulders,True,True):
+                print("TRÄFF")            
 
             if pg.sprite.spritecollideany(playerCar, boulders):
                 global number_of_hits
