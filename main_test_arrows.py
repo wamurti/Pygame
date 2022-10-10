@@ -7,7 +7,7 @@ import spritesheet
 
 pg.init()
 from pygame import mixer
-from Classes import Boulder, Player
+from Classes import Boulder, Player, SpriteSheet
 
 
 game_active = True
@@ -43,10 +43,10 @@ sprite_sheet_image_down = load_image(f"down.png")
 sprite_sheet_image_left = load_image(f"left.png")
 sprite_sheet_image_right = load_image(f"right.png")
 sprite_sheet_image_up = load_image(f"up.png")
-sprite_sheet_down = spritesheet.SpriteSheet(sprite_sheet_image_down)
-sprite_sheet_left = spritesheet.SpriteSheet(sprite_sheet_image_left)
-sprite_sheet_right = spritesheet.SpriteSheet(sprite_sheet_image_right)
-sprite_sheet_up = spritesheet.SpriteSheet(sprite_sheet_image_up)
+sprite_sheet_down = SpriteSheet(sprite_sheet_image_down)
+sprite_sheet_left = SpriteSheet(sprite_sheet_image_left)
+sprite_sheet_right = SpriteSheet(sprite_sheet_image_right)
+sprite_sheet_up = SpriteSheet(sprite_sheet_image_up)
 black = (0,0,0)
 
 #Create animation list
@@ -366,7 +366,7 @@ def game_loop():
         playerCar.update()       # PLayer update /JL
         all_sprites_list.update()
         screen.blit(map_surface, (0,0))
-        
+
         #update animation
         
         current_time = pg.time.get_ticks()
