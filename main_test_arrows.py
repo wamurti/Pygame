@@ -1,9 +1,14 @@
+from string import whitespace
 import pygame as pg
 import os.path
 import random
+
+import spritesheet
+
 pg.init()
 from pygame import mixer
 from Classes import Boulder, Player
+
 
 game_active = True
 SCREEN_WIDTH = 1000
@@ -24,6 +29,8 @@ red = (200, 0, 0)
 green = (0,200,0)
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
+# sprite_sheet_image_down = pg.image.load(f"{main_dir}/Graphics/sheet.png").convert_alpha()
+
 def load_image(file):
     "loads an image, prepares it for play"
     file = os.path.join(main_dir, 'Graphics', file)
@@ -32,6 +39,29 @@ def load_image(file):
     except pg.error:
         raise SystemExit('Could not load image "%s" %s'%(file, pg.get_error()))
     return surface
+sprite_sheet_image_down = load_image(f"down.png")
+sprite_sheet_image_left = load_image(f"left.png")
+sprite_sheet_down = spritesheet.SpriteSheet(sprite_sheet_image_down)
+sprite_sheet_left = spritesheet.SpriteSheet(sprite_sheet_image_left)
+black = (0,0,0)
+
+#Create animation list
+animation_list_down = []
+animation_list_left = []
+animation_steps = 10
+last_update = pg.time.get_ticks()
+animation_cooldown = 100
+frame = 0
+
+
+for x in range(animation_steps):
+    animation_list_down.append(sprite_sheet_down.get_image(x,120,124,1,black))
+    animation_list_left.append(sprite_sheet_left.get_image(x,120,124,1,black))
+
+
+# frame_1 = sprite_sheet.get_image(1,120,124,1,black)
+# frame_2 = sprite_sheet.get_image(2,120,124,1,black)
+
 
 #Background Sound
 
@@ -136,6 +166,7 @@ heart_system = [heart_1,heart_rect_1, heart_2, heart_rect_2, heart_3, heart_rect
 number_of_hits = 0
 maps_cleared = 0
 def intro():
+
     intro =True
     while intro == True:
         keys = pg.key.get_pressed()
@@ -150,6 +181,7 @@ def intro():
         helloRect = hello.get_rect()
         helloRect.center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2) 
         screen.blit(hello, helloRect)
+        
         pg.display.update()
 
 def game_over():
@@ -217,7 +249,9 @@ def game_loop():
                         all_sprites_list.add(new_arrow)
                         mixer.Sound.play(arrow_sound)
         
-        if gaming:                         #What to do when game is active  
+        if gaming:                         #What to do when game is active
+            global frame
+            global last_update
 
             keys = pg.key.get_pressed()
             playerCar.animate(False)
@@ -309,15 +343,28 @@ def game_loop():
         playerCar.update()       # PLayer update /JL
         all_sprites_list.update()
         screen.blit(map_surface, (0,0))
+        #update animation
+        
+        current_time = pg.time.get_ticks()
+        if current_time - last_update >= animation_cooldown:
+            frame += 1
+            last_update = current_time
+            if frame >= len(animation_list_down):
+                frame = 0
+        screen.blit(animation_list_down[frame], (0,0))
+        
+        # screen.blit(frame_1, (0,0))
+        # screen.blit(frame_2,(0,0))
         all_sprites_list.draw(screen)
         screen.blit(heart_system[0],heart_system[1])
         screen.blit(heart_system[2],heart_system[3])
-        screen.blit(heart_system[4],heart_system[5])                   
+        screen.blit(heart_system[4],heart_system[5])
+                       
         pg.display.update()                         
         clock.tick(60)   
 
-while running:  
-    intro()     
+while running:
+    intro()   
     game_loop()
     pg.quit()
     quit()
