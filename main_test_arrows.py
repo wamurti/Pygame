@@ -41,22 +41,34 @@ def load_image(file):
     return surface
 sprite_sheet_image_down = load_image(f"down.png")
 sprite_sheet_image_left = load_image(f"left.png")
+sprite_sheet_image_right = load_image(f"right.png")
+sprite_sheet_image_up = load_image(f"up.png")
 sprite_sheet_down = spritesheet.SpriteSheet(sprite_sheet_image_down)
 sprite_sheet_left = spritesheet.SpriteSheet(sprite_sheet_image_left)
+sprite_sheet_right = spritesheet.SpriteSheet(sprite_sheet_image_right)
+sprite_sheet_up = spritesheet.SpriteSheet(sprite_sheet_image_up)
 black = (0,0,0)
 
 #Create animation list
 animation_list_down = []
 animation_list_left = []
+animation_list_right = []
+animation_list_up = []
+
 animation_steps = 10
 last_update = pg.time.get_ticks()
 animation_cooldown = 100
 frame = 0
+action = 0
 
 
 for x in range(animation_steps):
     animation_list_down.append(sprite_sheet_down.get_image(x,120,124,1,black))
     animation_list_left.append(sprite_sheet_left.get_image(x,120,124,1,black))
+    animation_list_right.append(sprite_sheet_right.get_image(x,120,124,1,black))
+    animation_list_up.append(sprite_sheet_up.get_image(x,120,124,1,black))
+
+animation_list = [animation_list_up,animation_list_right,animation_list_down,animation_list_left]
 
 
 # frame_1 = sprite_sheet.get_image(1,120,124,1,black)
@@ -230,7 +242,9 @@ def game_loop():
     
     gaming = True
     
-    while gaming:                            
+    
+    while gaming:
+        global action                      
         for events in pg.event.get():               
             if events.type == pg.QUIT:
                 pg.quit()
@@ -242,34 +256,43 @@ def game_loop():
                 all_sprites_list.add(new_boulder)
 
             if events.type == pg.KEYDOWN:
+                
                 if events.key == pg.K_SPACE:
                     if len(arrows) < 1:
                         new_arrow = Arrow()
                         arrows.add(new_arrow)
                         all_sprites_list.add(new_arrow)
                         mixer.Sound.play(arrow_sound)
+                
+                    
+
         
         if gaming:                         #What to do when game is active
             global frame
             global last_update
+            global action
 
             keys = pg.key.get_pressed()
             playerCar.animate(False)
             if keys[pg.K_LEFT]:
                 playerCar.animate(True)
                 playerCar.moveLeft(speed)
+                action = 3
                 
             if keys[pg.K_RIGHT]:
                 playerCar.animate(True)
                 playerCar.moveRight(speed)
+                action = 1
                 
             if keys[pg.K_DOWN]:
                 playerCar.animate(True)
                 playerCar.moveBack(speed)
+                action = 2
                 
             if keys[pg.K_UP]:
                 playerCar.animate(True)
                 playerCar.moveForward(speed)
+                action = 0
             
             if pg.sprite.groupcollide(arrows, boulders,True,True):
                 print("TRÄFF")
@@ -343,18 +366,20 @@ def game_loop():
         playerCar.update()       # PLayer update /JL
         all_sprites_list.update()
         screen.blit(map_surface, (0,0))
+        
         #update animation
         
         current_time = pg.time.get_ticks()
         if current_time - last_update >= animation_cooldown:
             frame += 1
             last_update = current_time
-            if frame >= len(animation_list_down):
+            if frame >= len(animation_list[0]):
                 frame = 0
-        screen.blit(animation_list_down[frame], (0,0))
         
-        # screen.blit(frame_1, (0,0))
-        # screen.blit(frame_2,(0,0))
+        screen.blit(animation_list[action][frame], (0,0))
+
+       
+        
         all_sprites_list.draw(screen)
         screen.blit(heart_system[0],heart_system[1])
         screen.blit(heart_system[2],heart_system[3])
