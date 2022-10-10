@@ -3,8 +3,6 @@ import pygame as pg
 import os.path
 import random
 
-import spritesheet
-
 pg.init()
 from pygame import mixer
 from Classes import Boulder, Player, SpriteSheet
@@ -29,7 +27,7 @@ red = (200, 0, 0)
 green = (0,200,0)
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
-# sprite_sheet_image_down = pg.image.load(f"{main_dir}/Graphics/sheet.png").convert_alpha()
+
 
 def load_image(file):
     "loads an image, prepares it for play"
@@ -69,10 +67,6 @@ for x in range(animation_steps):
     animation_list_up.append(sprite_sheet_up.get_image(x,120,124,1,black))
 
 animation_list = [animation_list_up,animation_list_right,animation_list_down,animation_list_left]
-
-
-# frame_1 = sprite_sheet.get_image(1,120,124,1,black)
-# frame_2 = sprite_sheet.get_image(2,120,124,1,black)
 
 
 #Background Sound
@@ -162,11 +156,9 @@ maps_cleared = 0
 running = True
 
 heart_1 = pg.transform.scale2x(load_image('Heart1.png'))
-#pg.transform.scale2x(heart_1)
-heart_2 = pg.transform.scale2x(load_image('Heart1.png'))
-#pg.transform.scale2x(heart_2)
-heart_3 = pg.transform.scale2x(load_image('Heart1.png'))
-#pg.transform.scale2x(heart_3)
+heart_2 = heart_1
+heart_3 = heart_1
+
 heart_rect_1 = heart_1.get_rect(center = (SCREEN_WIDTH - 16,15))
 heart_rect_2 = heart_2.get_rect(center = (SCREEN_WIDTH - 50,15))
 heart_rect_3 = heart_2.get_rect(center = (SCREEN_WIDTH - 84,15))
