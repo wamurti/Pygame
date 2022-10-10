@@ -42,6 +42,10 @@ mixer.music.play(-1)
 boulderOut = mixer.Sound(f"{main_dir}/Graphics/foom_0.wav")
 arrow_sound = mixer.Sound(f"{main_dir}/Graphics/arrowHit04.wav")
 putoutfire = mixer.Sound(f"{main_dir}/Graphics/putoutfire.ogg")
+death = mixer.Sound(f"{main_dir}/Graphics/DeathSound.wav")
+falling = mixer.Sound(f"{main_dir}/Graphics/Falling.wav")
+mixer.Sound.set_volume(falling,0.2)
+gameover_sound = mixer.Sound(f"{main_dir}/Graphics/Gameover.wav")
 
         
 
@@ -161,6 +165,9 @@ def game_over():
             if keys[pg.K_SPACE]:
                 over = False
         screen.blit(end_screen, (0,0))
+        mixer.music.stop()
+        mixer.Sound.play(gameover_sound,1)
+        mixer.Sound.set_volume(gameover_sound,0.2)
         goodbye = font.render("GAME OVER LOSER!",True , red)
         goodbyeRect = goodbye.get_rect()
         goodbyeRect.center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2) 
@@ -251,6 +258,7 @@ def game_loop():
                     heart_system[4] = heart_system[6]
                     playerCar.moveBack(10)
                     playerCar.moveLeft(5)
+                    mixer.Sound.play(death)
                     playerCar.kill()
                     game_over()
                     gaming = False
@@ -258,13 +266,14 @@ def game_loop():
 
             if pg.sprite.spritecollideany(playerCar, holes):
                 # If so, then remove the player and quit the game
+                mixer.Sound.play(falling)
                 for i in shrink:
                     screen.blit(map_surface, (0,0))
                     screen.blit(i, (playerCar.rect))  
                     pg.display.update()
                     pg.time.wait(300)
                 print("jord")
-
+                
                 playerCar.kill()
                 game_over()
                 gaming = False
@@ -277,7 +286,7 @@ def game_loop():
                     pg.display.update()
                     pg.time.wait(300)
                 print("vatten")
-
+                mixer.Sound.play(falling)
                 playerCar.kill()
                 game_over()
                 gaming = False
