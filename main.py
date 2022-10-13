@@ -5,7 +5,7 @@ import random
 
 pg.init()
 from pygame import mixer
-from Classes import Boulder, Player, SpriteSheet
+from Classes import Boulder, Player, SpriteSheet, Button
 
 
 game_active = True
@@ -45,6 +45,27 @@ sprite_sheet_down = SpriteSheet(sprite_sheet_image_down)
 sprite_sheet_left = SpriteSheet(sprite_sheet_image_left)
 sprite_sheet_right = SpriteSheet(sprite_sheet_image_right)
 sprite_sheet_up = SpriteSheet(sprite_sheet_image_up)
+
+# Start menu buttons and images
+start_img =load_image("start_btn_0.png").convert_alpha()
+#start_img = pg.transform.scale(load_image('start_btn_OFF.png'))
+#credit_img = pg.transform.scale(load_image('credits_btn_OFF.png'))
+credit_img = load_image("credits_btn_0.png").convert_alpha()
+quit_img = load_image("quit_btn_0.png").convert_alpha()              #uncomment
+
+start_button = Button(350, 400, start_img, 1)
+credit_button = Button(350, 500, credit_img,1)
+quit_button = Button(350, 600, quit_img, 1)                            #uncomment
+
+#start_btn = pg.transform.scale(start_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
+#credit_btn = pg.transform.scale(credit_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
+#title_img = pg.transform.scale(load_image('blood_Magic0.png'))
+title_img = load_image("blood_Magic0.png").convert_alpha()
+
+
+
+
+
 black = (0,0,0)
 
 #Create animation list
@@ -148,7 +169,7 @@ all_sprites_list.add(water1, water2, water3, water8, hole4, hole5, hole6, hole7)
 #Load Images
 map_surface = load_image('preview.png')
 map_surface = pg.transform.scale(map_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
-start_screen = load_image('blood_and_magic.png')
+start_screen = load_image('fantasy_scene01.png')
 start_screen = pg.transform.scale(start_screen, (SCREEN_WIDTH, SCREEN_HEIGHT))
 end_screen = load_image('background.png')
 end_screen = pg.transform.scale(end_screen, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -173,18 +194,46 @@ def intro():
 
     intro =True
     while intro == True:
+        
+        # screen.fill((0, 0, 0))
         keys = pg.key.get_pressed()
-        for events in pg.event.get():              
+        for events in pg.event.get():
+            if start_button.draw():
+                intro = False
+                print("Klick Start")                # Menu button start game  gaming = True
+            if credit_button.draw():
+                print("Klick Credits")              # Meny button show credits - lägg in länk till Credits
+            if quit_button.draw():
+                print("klick quit")                 # Menu button quit game.
+                pg.quit()
+                exit()
             if events.type == pg.QUIT:
                 pg.quit()
                 exit()
             if keys[pg.K_SPACE]:
                 intro = False
+        
+        
+
+        start_img.set_colorkey((0, 0, 0))
+        credit_img.set_colorkey((0, 0, 0))
+        title_img.set_colorkey((0, 0, 0))
+        quit_img.set_colorkey((0, 0, 0))
+
+
         screen.blit(start_screen, (0,0))
-        hello = font_1.render("Welcome! Press Space to play!",True , green)
-        helloRect = hello.get_rect()
-        helloRect.center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2) 
-        screen.blit(hello, helloRect)
+        screen.blit(title_img, (100, 100))
+
+        screen.blit(start_img, (350, 400))
+        screen.blit(credit_img,(350, 500))
+        screen.blit(quit_img, (350, 600))
+
+
+        #hello = font_1.render("Welcome! Press Space to play!",True , green)
+        #helloRect = hello.get_rect()
+        #helloRect.center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
+
+        #screen.blit(hello, helloRect)
         
         pg.display.update()
 
