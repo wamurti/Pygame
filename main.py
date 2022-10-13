@@ -190,7 +190,6 @@ heart_rect_2 = heart_2.get_rect(center = (SCREEN_WIDTH - 50,15))
 heart_rect_3 = heart_2.get_rect(center = (SCREEN_WIDTH - 84,15))
 
 heart_1_empty = pg.transform.scale2x(load_image('Heart2.png'))
-#pg.transform.scale2x(heart_1_empty)
 
 heart_system = [heart_1,heart_rect_1, heart_2, heart_rect_2, heart_3, heart_rect_3, heart_1_empty]
 number_of_hits = 0
@@ -242,12 +241,6 @@ def intro():
         screen.blit(credit_img,(350, 500))
         screen.blit(quit_img, (350, 600))
 
-
-        #hello = font_1.render("Welcome! Press Space to play!",True , green)
-        #helloRect = hello.get_rect()
-        #helloRect.center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
-
-        #screen.blit(hello, helloRect)
         
         pg.display.update()
 
@@ -261,8 +254,8 @@ def game_over():
             if events.type == pg.QUIT:
                 pg.quit()
                 exit()
-            if keys[pg.K_SPACE]:
-                over = False
+            # if keys[pg.K_SPACE]:
+            #     over = False
         screen.blit(end_screen, (0,0))
         mixer.music.stop()
         mixer.Sound.play(gameover_sound,1)
@@ -369,7 +362,6 @@ def game_loop():
                 global counter
                 starttid = pg.time.get_ticks()
                 if playerCar.lastcollide < starttid and counter < 6:
-                    print("Counter is", counter)
                     mixer.Sound.play(get_hit)
                     playerCar.lastcollide = starttid+500
                     heart_system[counter] = heart_system[6]
