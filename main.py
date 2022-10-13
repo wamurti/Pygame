@@ -79,6 +79,7 @@ animation_list_up = []
 
 animation_steps = 10
 last_update = pg.time.get_ticks()
+last_update_2 = pg.time.get_ticks()
 animation_cooldown = 100
 frame = 0
 action = 0
@@ -106,6 +107,7 @@ death = mixer.Sound(f"{main_dir}/Graphics/DeathSound.wav")
 falling = mixer.Sound(f"{main_dir}/Graphics/Falling.wav")
 mixer.Sound.set_volume(falling,0.2)
 gameover_sound = mixer.Sound(f"{main_dir}/Graphics/Gameover.wav")
+get_hit = mixer.Sound(f"{main_dir}/Graphics/2.ogg")
 
         
 
@@ -275,6 +277,7 @@ def game_over():
         screen.blit(total_score, total_score_rect)
         pg.display.update()
 
+
 def victory():
     winner = True
     
@@ -297,7 +300,8 @@ def victory():
         screen.blit(total_score, total_score_rect)
         screen.blit(hurray, hurrayRect)
         pg.display.update()
-       
+
+counter = 0  
 
 def game_loop():
     global score
@@ -360,29 +364,24 @@ def game_loop():
                 print("TRÄFF")
                 mixer.Sound.play(putoutfire)  
                 score += 1        
-
+            
             if pg.sprite.spritecollideany(playerCar, boulders):
-                global number_of_hits
-            # Vad händer när spelaren blir träffad av en eldboll
-
-                number_of_hits += 1
-                if number_of_hits in range(0,15):
-                    heart_system[0] = heart_system[6]
-                    playerCar.moveBack(10)
-                    playerCar.moveLeft(5)
-                if number_of_hits in range(15,29):
-                    heart_system[2] = heart_system[6]
-                    playerCar.moveBack(10)
-                    playerCar.moveLeft(5)
-                if number_of_hits in range(30,44):
-                    heart_system[4] = heart_system[6]
-                    playerCar.moveBack(10)
-                    playerCar.moveLeft(5)
+                global counter
+                starttid = pg.time.get_ticks()
+                if playerCar.lastcollide < starttid and counter < 6:
+                    print("Counter is", counter)
+                    mixer.Sound.play(get_hit)
+                    playerCar.lastcollide = starttid+500
+                    heart_system[counter] = heart_system[6]
+                    playerCar.moveBack(30)
+                    playerCar.moveLeft(20)
+                    counter += 2
+                elif counter == 6:
                     mixer.Sound.play(death)
                     playerCar.kill()
                     game_over()
                     gaming = False
-                    
+  
 
             if pg.sprite.spritecollideany(playerCar, holes):
                 # If so, then remove the player and quit the game

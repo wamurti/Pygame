@@ -49,6 +49,7 @@ class Player(pg.sprite.Sprite):
         self.rect.y = self.start_y
         self.frame = 0
         self.animation = False
+        self.lastcollide = 0
 
     def animate(self, trueorfalse):
         self.animation = trueorfalse
