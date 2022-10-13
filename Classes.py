@@ -4,6 +4,10 @@ import os.path
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
+#screen size for menu button class /JL
+screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+
 def load_image(file):
     "loads an image, prepares it for play"
     file = os.path.join(main_dir, 'Graphics', file)
@@ -12,6 +16,8 @@ def load_image(file):
     except pg.error:
         raise SystemExit('Could not load image "%s" %s'%(file, pg.get_error()))
     return surface
+
+
 class Boulder(pg.sprite.Sprite):
     def __init__(self):
         super(Boulder, self).__init__()
@@ -84,3 +90,35 @@ class SpriteSheet():
         image = pg.transform.scale(image, (width*scale,height*scale))
         image.set_colorkey(colour)
         return image
+
+# Load button images, mouse and click
+
+class Button():
+    
+    def __init__(self, x, y, image, scale):
+        width = image.get_width()
+        height = image.get_height()
+        self.image = pg.transform.scale(image, scale *(width, height)).convert_alpha()
+        #self.image = pg.Surface.convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+        self.clicked = False
+    
+    def draw(self):
+        action = False
+        # get mouse position
+        pos = pg.mouse.get_pos()
+        #Check mouseover and clicked condition
+        if  self.rect.collidepoint(pos):
+            if pg.mouse.get_pressed()[0] == 1 and self.clicked == False:  # Musen klickad [0]Vänster ([1]Mitten [2]höger) == 1 
+                self.clicked = True
+                action = True            # Ändra till start main.py eller vilken det är
+
+        if pg.mouse.get_pressed()[0] == 0:      # Gör den falsk när klickad en gång. 
+            self.clicked = False
+        
+
+        # draw button on screen
+        screen.blit(self.image, (self.rect.x, self.rect.y))
+
+        return action
