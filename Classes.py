@@ -22,8 +22,9 @@ class Boulder(pg.sprite.Sprite):
     def __init__(self):
         super(Boulder, self).__init__()
         x = random.randint(100, 900)
+        y = random.randint(-300, 0)
         self.image = load_image('gif.gif1.gif').convert_alpha()
-        self.rect = self.image.get_rect(midbottom=(x, 0))
+        self.rect = self.image.get_rect(midbottom=(x, y))
 
     def update(self):
         self.rect.move_ip(0, +7)

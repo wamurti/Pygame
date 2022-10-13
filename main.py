@@ -21,10 +21,12 @@ bg.fill((255,255,255))
 
 # Font 
 
-font = pg.font.Font('freesansbold.ttf', 75)
-font_1= pg.font.Font('freesansbold.ttf', 50)
+font = pg.font.Font('Graphics/arbatosh.ttf', 75)
+font_1= pg.font.Font('Graphics/arbatosh.ttf', 50)
+font_2= pg.font.Font('Graphics/arbatosh.ttf', 40)
 red = (200, 0, 0)
 green = (0,200,0)
+gold = (255, 185, 15)
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 
@@ -37,6 +39,7 @@ def load_image(file):
     except pg.error:
         raise SystemExit('Could not load image "%s" %s'%(file, pg.get_error()))
     return surface
+
 sprite_sheet_image_down = load_image(f"down.png")
 sprite_sheet_image_left = load_image(f"left.png")
 sprite_sheet_image_right = load_image(f"right.png")
@@ -94,7 +97,7 @@ animation_list = [animation_list_up,animation_list_right,animation_list_down,ani
 
 mixer.init()
 mixer.music.load(f"{main_dir}/Graphics/WoodlandFantasy.wav")
-mixer.music.set_volume(0.2)
+mixer.music.set_volume(0.5)
 mixer.music.play(-1)
 boulderOut = mixer.Sound(f"{main_dir}/Graphics/foom_0.wav")
 arrow_sound = mixer.Sound(f"{main_dir}/Graphics/arrowHit04.wav")
@@ -137,7 +140,7 @@ class Arrow(pg.sprite.Sprite):
 
 boulders = pg.sprite.Group()
 ADDBOULDER = pg.USEREVENT +1
-pg.time.set_timer(ADDBOULDER, 3000)
+pg.time.set_timer(ADDBOULDER, 1500)
 
 arrows = pg.sprite.Group()
 holes = pg.sprite.Group()
@@ -190,6 +193,15 @@ heart_1_empty = pg.transform.scale2x(load_image('Heart2.png'))
 heart_system = [heart_1,heart_rect_1, heart_2, heart_rect_2, heart_3, heart_rect_3, heart_1_empty]
 number_of_hits = 0
 maps_cleared = 0
+score = 0
+# a scoreboard
+def scoreboard():
+    global score
+    score_board = font_2.render('Score: '+str(score),True , gold)
+    scoreRect = score_board.get_rect()
+    scoreRect.topright = (SCREEN_WIDTH-10, 35) 
+    screen.blit(score_board, scoreRect)
+
 def intro():
 
     intro =True
@@ -202,7 +214,7 @@ def intro():
                 intro = False
                 print("Klick Start")                # Menu button start game  gaming = True
             if credit_button.draw():
-                print("Klick Credits")              # Meny button show credits - lägg in länk till Credits
+                print("Made in honor of Lill-Hövding!")              # Meny button show credits - lägg in länk till Credits
             if quit_button.draw():
                 print("klick quit")                 # Menu button quit game.
                 pg.quit()
@@ -252,11 +264,15 @@ def game_over():
         screen.blit(end_screen, (0,0))
         mixer.music.stop()
         mixer.Sound.play(gameover_sound,1)
-        mixer.Sound.set_volume(gameover_sound,0.2)
-        goodbye = font.render("GAME OVER LOSER!",True , red)
+        mixer.Sound.set_volume(gameover_sound,0.3)
+        goodbye = font.render(f"GAME OVER LOSER!",True , red)
+        total_score = font_1.render(f"Score was: {score}",True , red)
+        total_score_rect = total_score.get_rect()
         goodbyeRect = goodbye.get_rect()
         goodbyeRect.center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2) 
+        total_score_rect.center = (SCREEN_WIDTH//2, 500)
         screen.blit(goodbye, goodbyeRect)
+        screen.blit(total_score, total_score_rect)
         pg.display.update()
 
 def victory():
@@ -272,15 +288,19 @@ def victory():
             if keys[pg.K_SPACE]:
                 winner = False
         screen.blit(end_screen, (0,0))
-        hurray = font.render("You won! Hurray!",True , red)
+        hurray = font.render("You won! Hurray!",True , gold)
+        total_score = font_1.render(f"Score was: {score}",True , gold)
+        total_score_rect = total_score.get_rect()
         hurrayRect = hurray.get_rect()
-        hurrayRect.center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2) 
+        hurrayRect.center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
+        total_score_rect.center = (SCREEN_WIDTH//2, 500) 
+        screen.blit(total_score, total_score_rect)
         screen.blit(hurray, hurrayRect)
         pg.display.update()
        
 
 def game_loop():
-    
+    global score
     gaming = True
     
     
@@ -293,13 +313,14 @@ def game_loop():
             if events.type == ADDBOULDER:
                 mixer.Sound.play(boulderOut)
                 new_boulder = Boulder()
-                boulders.add(new_boulder)
-                all_sprites_list.add(new_boulder)
+                another = Boulder()
+                boulders.add(new_boulder, another)
+                all_sprites_list.add(new_boulder, another)
 
             if events.type == pg.KEYDOWN:
                 
                 if events.key == pg.K_SPACE:
-                    if len(arrows) < 1:
+                    if len(arrows) < 2:
                         new_arrow = Arrow()
                         arrows.add(new_arrow)
                         all_sprites_list.add(new_arrow)
@@ -337,7 +358,8 @@ def game_loop():
             
             if pg.sprite.groupcollide(arrows, boulders,True,True):
                 print("TRÄFF")
-                mixer.Sound.play(putoutfire)          
+                mixer.Sound.play(putoutfire)  
+                score += 1        
 
             if pg.sprite.spritecollideany(playerCar, boulders):
                 global number_of_hits
@@ -378,13 +400,13 @@ def game_loop():
             
             if pg.sprite.spritecollideany(playerCar, waters):
                 # If so, then remove the player and quit the game
+                mixer.Sound.play(falling)
                 for i in shrink:
                     screen.blit(map_surface, (0,0))
                     screen.blit(i, (playerCar.rect))  
                     pg.display.update()
                     pg.time.wait(300)
                 print("vatten")
-                mixer.Sound.play(falling)
                 playerCar.kill()
                 game_over()
                 gaming = False
@@ -395,6 +417,7 @@ def game_loop():
                 global maps_cleared
                 print("Du har nu klarat bana 1! ")
                 maps_cleared += 1
+                score += 10
                 victory()
                 gaming = False
 
@@ -407,7 +430,7 @@ def game_loop():
         playerCar.update()       # PLayer update /JL
         all_sprites_list.update()
         screen.blit(map_surface, (0,0))
-
+        scoreboard()
         #update animation
         
         current_time = pg.time.get_ticks()
