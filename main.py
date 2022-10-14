@@ -19,16 +19,16 @@ clock = pg.time.Clock()                         #How fast we want to run our gam
 bg = pg.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 bg.fill((255,255,255))
 
-# Font 
 
-font = pg.font.Font('Graphics/arbatosh.ttf', 75)
-font_1= pg.font.Font('Graphics/arbatosh.ttf', 50)
-font_2= pg.font.Font('Graphics/arbatosh.ttf', 40)
 red = (200, 0, 0)
 green = (0,200,0)
 gold = (255, 185, 15)
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
+# Font 
+font = pg.font.Font(f"{main_dir}/Graphics/arbatosh.ttf", 75)
+font_1= pg.font.Font(f"{main_dir}/Graphics/arbatosh.ttf", 50)
+font_2= pg.font.Font(f"{main_dir}/Graphics/arbatosh.ttf", 40)
 
 
 def load_image(file):
