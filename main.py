@@ -11,7 +11,7 @@ from Classes import Boulder, Player, SpriteSheet, Button
 game_active = True
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
-anim = 3
+anim = 6
 ALPHA =(0, 0, 0)
 screen = pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))       #Screen size, should this be changed? 
 pg.display.set_caption("Pygameforever")         #Game title
@@ -55,15 +55,19 @@ start_img =load_image("start_btn_0.png").convert_alpha()
 #credit_img = pg.transform.scale(load_image('credits_btn_OFF.png'))
 credit_img = load_image("credits_btn_0.png").convert_alpha()
 quit_img = load_image("quit_btn_0.png").convert_alpha()              #uncomment
+menu_img = load_image("menu_btn_0.png").convert_alpha()              #uncomment
 
 start_button = Button(350, 400, start_img, 1)
 credit_button = Button(350, 500, credit_img,1)
 quit_button = Button(350, 600, quit_img, 1)                            #uncomment
+menu_button = Button(600, 680, quit_img, 1)                            #uncomment
 
 #start_btn = pg.transform.scale(start_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
 #credit_btn = pg.transform.scale(credit_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
 #title_img = pg.transform.scale(load_image('blood_Magic0.png'))
 title_img = load_image("blood_Magic0.png").convert_alpha()
+#title_anim = load_image("blood_Magic", str(".png")).convert_alpha()
+credits_img = load_image("campfire002.png").convert_alpha()
 
 
 
@@ -203,6 +207,7 @@ def scoreboard():
     scoreRect.topright = (SCREEN_WIDTH-10, 35) 
     screen.blit(score_board, scoreRect)
 
+
 def intro():
 
     intro =True
@@ -212,9 +217,10 @@ def intro():
         keys = pg.key.get_pressed()
         for events in pg.event.get():
             if start_button.draw():
-                intro = False
+                game_loop()
                 print("Klick Start")                # Menu button start game  gaming = True
             if credit_button.draw():
+                credits()
                 print("Made in honor of Lill-Hövding!")              # Meny button show credits - lägg in länk till Credits
             if quit_button.draw():
                 print("klick quit")                 # Menu button quit game.
@@ -227,7 +233,7 @@ def intro():
                 intro = False
         
         
-
+        
         start_img.set_colorkey((0, 0, 0))
         credit_img.set_colorkey((0, 0, 0))
         title_img.set_colorkey((0, 0, 0))
@@ -241,6 +247,27 @@ def intro():
         screen.blit(credit_img,(350, 500))
         screen.blit(quit_img, (350, 600))
 
+        
+        pg.display.update()
+
+def credits():
+    over = True
+    
+    while over == True:
+        keys = pg.key.get_pressed()
+            
+        for events in pg.event.get():
+            if menu_button.draw():
+                intro()              
+            if events.type == pg.QUIT:
+                pg.quit()
+                exit()
+            if keys[pg.K_SPACE]:
+                intro()
+        screen.blit(credits_img, (0,0))
+        menu_img.set_colorkey((0, 0, 0))
+        
+        screen.blit(menu_img, (630, 700))
         
         pg.display.update()
 
@@ -281,11 +308,11 @@ def victory():
             if events.type == pg.QUIT:
                 pg.quit()
                 exit()
-            if keys[pg.K_SPACE]:
+            if keys[pg.K_q]:
                 winner = False
         screen.blit(end_screen, (0,0))
         hurray = font.render("You won! Hurray!",True , gold)
-        total_score = font_1.render(f"Score was: {score}",True , gold)
+        total_score = font_1.render(f"Score was: {score}",True , gold )
         total_score_rect = total_score.get_rect()
         hurrayRect = hurray.get_rect()
         hurrayRect.center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
@@ -444,7 +471,8 @@ def game_loop():
         clock.tick(60)   
 
 while running:
-    intro()   
+    intro()
+    credits()
     game_loop()
     pg.quit()
     quit()
