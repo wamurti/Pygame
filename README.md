@@ -16,10 +16,9 @@ Start page font credit Peter Olexa http://www.dealjumbo.com & https://www.dafont
 <p><br></p>
 
 ### Screenshots from the game
-
+![startscreen](/startscreen.png)
 ![ingame](/ingame.png)
 ![ingame](/ingame2.png)
-![startscreen](/startscreen.png)
 ![credits](/credits.png)
 
 
